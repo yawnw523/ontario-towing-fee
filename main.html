@@ -1,0 +1,121 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+    <title>安省拖车费用查询系统</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.2.3/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.0/font/bootstrap-icons.css" rel="stylesheet">
+    <link href="css/style.css" rel="stylesheet">
+    <link href="css/mobile.css" rel="stylesheet">
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <img src="panex-logo.png" alt="Panex Logo" class="logo">
+            <h1>安省拖车费用查询系统</h1>
+        </div>
+
+        <div class="card main-card">
+            <div class="card-body">
+                <form id="queryForm">
+                    <div class="mb-3">
+                        <label for="destinationCity" class="form-label">目的地城市</label>
+                        <div class="input-group">
+                            <input type="text" class="form-control" id="destinationCity" 
+                                   placeholder="请输入城市名称 (如: KINGSTON)" autocomplete="off">
+                            <button class="btn btn-outline-secondary" type="button" id="clearInput">
+                                <i class="bi bi-x-lg"></i>
+                            </button>
+                        </div>
+                        <div id="citySuggestions" class="list-group d-none"></div>
+                        <div id="searchStatus" class="text-muted mt-2 d-none">
+                            <small><i class="bi bi-search"></i> 搜索中...</small>
+                        </div>
+                    </div>
+
+                    <!-- 拖柜模式选择 -->
+                    <div class="mb-3">
+                        <label class="form-label">拖柜模式</label>
+                        <div class="mode-selection">
+                            <div class="mode-option">
+                                <input type="radio" class="btn-check" name="moveType" id="liveUnload" value="live" checked>
+                                <label class="btn btn-outline-primary w-100" for="liveUnload">
+                                    Live Unload
+                                    <span>实装</span>
+                                </label>
+                            </div>
+                            <div class="mode-option">
+                                <input type="radio" class="btn-check" name="moveType" id="drop" value="drop">
+                                <label class="btn btn-outline-primary w-100" for="drop">
+                                    Drop
+                                    <span>甩柜</span>
+                                </label>
+                            </div>
+                        </div>
+                    </div>
+
+                    <button type="submit" class="btn btn-primary w-100">
+                        查询费用
+                    </button>
+                </form>
+
+                <!-- 搜索历史 -->
+                <div id="searchHistory" class="mt-4 d-none">
+                    <h6 class="text-muted mb-2">最近搜索</h6>
+                    <div class="history-tags"></div>
+                </div>
+            </div>
+        </div>
+
+        <!-- 结果卡片 -->
+        <div id="resultCard" class="card result-card d-none">
+            <div class="card-header">
+                <h5 class="mb-0">查询结果</h5>
+            </div>
+            <div class="card-body">
+                <div class="result-content">
+                    <div class="d-flex justify-content-between align-items-center mb-3">
+                        <h4 id="resultCity" class="mb-0"></h4>
+                        <span id="resultZone" class="badge"></span>
+                    </div>
+                    <table class="table extra-fee-table">
+                        <tbody>
+                            <tr>
+                                <td class="fee-description">基础费用</td>
+                                <td class="fee-amount text-end" id="resultBaseRate"></td>
+                            </tr>
+                            <tr id="fscRow">
+                                <td class="fee-description">燃油附加费 (25%)</td>
+                                <td class="fee-amount text-end" id="resultFsc"></td>
+                            </tr>
+                            <tr class="table-active">
+                                <td class="fee-description"><strong>总费用</strong></td>
+                                <td class="fee-amount text-end"><strong id="resultTotalRate"></strong></td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+
+                <!-- 等时费用说明 -->
+                <div id="waitingTimeInfo" class="alert alert-info mt-3 d-none">
+                    <h6 class="mb-2"><i class="bi bi-clock"></i> 等时费用说明</h6>
+                    <p class="mb-0" id="waitingTimeDetails"></p>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script src="js/auth.js"></script>
+    <script src="js/data.js"></script>
+    <script src="js/main.js"></script>
+    <script>
+        // 检查登录状态
+        if (!checkAuth()) {
+            window.location.href = 'index.html';
+        }
+    </script>
+</body>
+</html> 
