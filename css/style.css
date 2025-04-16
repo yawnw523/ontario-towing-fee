@@ -1,0 +1,373 @@
+/* 容器样式 */
+.container {
+    max-width: 1000px;
+    padding: 20px;
+    background-color: var(--card-bg-color);
+    border-radius: 20px;
+    box-shadow: 0 8px 30px rgba(0, 0, 0, 0.08);
+    margin-top: 30px;
+    margin-bottom: 30px;
+    transition: transform 0.3s ease;
+    border-top: 3px solid var(--canada-red);
+}
+
+.container:hover {
+    transform: translateY(-5px);
+}
+
+/* 头部样式 */
+.header {
+    text-align: center;
+    margin-bottom: 40px;
+    padding: 30px;
+    border-bottom: 2px solid var(--border-color);
+    animation: fadeIn 1s ease-out;
+    background: #ffffff;
+    border-radius: 15px;
+}
+
+.header img {
+    max-height: 80px;
+    margin-bottom: 20px;
+    transition: transform 0.3s ease;
+    filter: drop-shadow(0 4px 6px rgba(0, 0, 0, 0.1));
+    object-fit: contain;
+    display: inline-block;
+}
+
+.header img:hover {
+    transform: scale(1.05);
+    filter: drop-shadow(0 6px 12px rgba(0, 0, 0, 0.15));
+}
+
+.header h1 {
+    color: var(--primary-color);
+    font-size: 2rem;
+    font-weight: 700;
+    margin-top: 20px;
+    letter-spacing: -0.5px;
+    text-shadow: 0 2px 4px rgba(0, 0, 0, 0.05);
+}
+
+/* 卡片样式 */
+.card {
+    border: none;
+    border-radius: 15px;
+    box-shadow: var(--card-shadow);
+    margin-bottom: 25px;
+    transition: all 0.3s ease;
+    background: linear-gradient(to bottom right, #ffffff, #f8f9fa);
+    overflow: hidden;
+}
+
+.card:hover {
+    transform: translateY(-3px);
+    box-shadow: var(--hover-shadow);
+}
+
+.card-header {
+    border-bottom: 2px solid var(--border-color);
+    padding: 20px;
+    border-radius: 15px 15px 0 0 !important;
+    background: linear-gradient(135deg, #f8f9fa, #e2e8f0);
+}
+
+/* 表单样式 */
+.form-control {
+    border: 2px solid var(--border-color);
+    border-radius: 10px;
+    padding: 12px;
+    font-size: 1rem;
+    transition: all 0.3s ease;
+    background-color: #fff;
+}
+
+.form-control:focus {
+    border-color: var(--accent-color);
+    box-shadow: 0 0 0 0.25rem rgba(0, 86, 179, 0.15);
+    transform: translateY(-2px);
+}
+
+.btn-primary {
+    background-color: var(--accent-color);
+    border-color: var(--accent-color);
+    padding: 12px 24px;
+    font-weight: 500;
+    border-radius: 10px;
+    transition: all 0.3s ease;
+}
+
+.btn-primary:hover, .btn-primary:focus {
+    background-color: var(--hover-color);
+    border-color: var(--hover-color);
+    transform: translateY(-2px);
+    box-shadow: 0 4px 12px rgba(0, 86, 179, 0.2);
+}
+
+/* 建议列表样式 */
+#citySuggestions {
+    max-height: 200px;
+    overflow-y: auto;
+    position: absolute;
+    width: 100%;
+    z-index: 1000;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+    border-radius: 10px;
+}
+
+.suggestion-item {
+    padding: 12px 15px;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    border: none;
+    border-bottom: 1px solid var(--border-color);
+}
+
+.suggestion-item:hover {
+    background-color: rgba(0, 86, 179, 0.05);
+    transform: translateX(5px);
+}
+
+/* 搜索历史标签 */
+.history-tags {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 8px;
+}
+
+.history-tag {
+    background-color: var(--background-color);
+    padding: 8px 16px;
+    border-radius: 20px;
+    font-size: 14px;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    border: 1px solid var(--border-color);
+}
+
+.history-tag:hover {
+    background-color: var(--accent-color);
+    color: white;
+    transform: translateY(-2px);
+}
+
+/* 结果卡片样式 */
+.result-card {
+    animation: slideUp 0.5s ease-out;
+}
+
+.result-content {
+    background-color: var(--background-color);
+    padding: 20px;
+    border-radius: 10px;
+}
+
+/* 表格样式 */
+.table {
+    margin-bottom: 0;
+    border-collapse: collapse;
+}
+
+.table th {
+    background-color: var(--background-color);
+    font-weight: 600;
+    padding: 12px 15px;
+    color: var(--primary-color);
+    font-size: 1rem;
+    border-bottom: 2px solid var(--border-color);
+}
+
+.table td {
+    padding: 10px 15px;
+    vertical-align: middle;
+    border-bottom: 1px solid rgba(0, 0, 0, 0.05);
+}
+
+/* 额外操作费用表格特殊样式 */
+.extra-fee-table {
+    font-size: 0.95rem;
+    background: #fff;
+    border-radius: 8px;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.03);
+}
+
+.extra-fee-table th {
+    background: linear-gradient(135deg, #f8f9fa, #e2e8f0);
+    padding: 10px 12px;
+    font-size: 0.95rem;
+    white-space: nowrap;
+}
+
+.extra-fee-table td {
+    padding: 8px 12px;
+}
+
+/* 费用组标题样式 */
+.fee-group-header td {
+    background: var(--header-bg) !important;
+    font-weight: 600;
+    color: var(--primary-color);
+    font-size: 1rem;
+    padding: 12px !important;
+}
+
+.fee-group-header i {
+    margin-right: 8px;
+    color: var(--accent-color);
+}
+
+/* 费用描述样式 */
+.fee-description {
+    color: var(--text-color);
+    max-width: 400px;
+}
+
+.fee-description .bi-info-circle {
+    color: var(--accent-color);
+    font-size: 0.9rem;
+    opacity: 0.7;
+    transition: opacity 0.3s ease;
+    cursor: help;
+}
+
+.fee-description .bi-info-circle:hover {
+    opacity: 1;
+}
+
+/* 费用金额样式 */
+.fee-amount {
+    font-family: 'Noto Sans SC', monospace;
+    font-weight: 700;
+    color: var(--accent-color);
+    font-size: 1rem;
+    text-align: right;
+    white-space: nowrap;
+    background: rgba(0, 86, 179, 0.02);
+    border-left: 2px solid rgba(0, 86, 179, 0.1);
+    transition: all 0.3s ease;
+}
+
+/* 悬停效果 */
+.extra-fee-table tr:not(.fee-group-header):hover {
+    background-color: rgba(0, 86, 179, 0.02);
+}
+
+.extra-fee-table tr:hover .fee-amount {
+    background: rgba(0, 86, 179, 0.05);
+    color: var(--hover-color);
+    transform: translateX(-2px);
+}
+
+/* 卡片样式优化 */
+.extra-fee-card {
+    margin-top: 20px;
+    transition: all 0.3s ease;
+}
+
+.extra-fee-card .card-header {
+    padding: 15px 20px;
+    background: linear-gradient(135deg, #f8f9fa, #e2e8f0);
+    border-bottom: 2px solid var(--border-color);
+}
+
+.extra-fee-card .card-header h5 {
+    margin: 0;
+    color: var(--primary-color);
+    font-weight: 600;
+    font-size: 1.1rem;
+}
+
+.extra-fee-card .badge {
+    font-size: 0.8rem;
+    padding: 6px 12px;
+    background-color: var(--accent-color);
+    transition: all 0.3s ease;
+    cursor: pointer;
+}
+
+.extra-fee-card .badge:hover {
+    background-color: var(--hover-color);
+    transform: translateY(-1px);
+}
+
+/* 徽章样式 */
+.badge {
+    padding: 8px 12px;
+    font-weight: 500;
+    border-radius: 6px;
+}
+
+.badge-zone1 {
+    background-color: #28a745;
+}
+
+.badge-zone2 {
+    background-color: #17a2b8;
+}
+
+.badge-other {
+    background-color: #6c757d;
+}
+
+/* 动画 */
+@keyframes fadeIn {
+    from { opacity: 0; transform: translateY(-20px); }
+    to { opacity: 1; transform: translateY(0); }
+}
+
+@keyframes slideUp {
+    from { opacity: 0; transform: translateY(20px); }
+    to { opacity: 1; transform: translateY(0); }
+}
+
+/* 响应式调整 */
+@media (max-width: 768px) {
+    .container {
+        margin: 0;
+        padding: 15px;
+        border-radius: 0;
+    }
+    
+    .header {
+        padding: 20px;
+        margin-bottom: 20px;
+    }
+    
+    .header h1 {
+        font-size: 1.5rem;
+    }
+    
+    .card {
+        margin-bottom: 15px;
+    }
+    
+    .table td, .table th {
+        padding: 12px;
+        font-size: 0.9rem;
+    }
+    
+    .history-tag {
+        padding: 6px 12px;
+        font-size: 13px;
+    }
+    
+    .fee-description {
+        max-width: none;
+    }
+    
+    .fee-amount {
+        font-size: 0.9rem;
+    }
+    
+    .fee-group-header td {
+        font-size: 0.95rem;
+    }
+    
+    .extra-fee-card .card-header {
+        padding: 12px 15px;
+    }
+    
+    .extra-fee-card .card-header h5 {
+        font-size: 1rem;
+    }
+} 

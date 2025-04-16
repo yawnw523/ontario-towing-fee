@@ -1,0 +1,375 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="theme-color" content="#1a4789">
+    <meta name="description" content="安省拖车费用查询系统 - 快速查询拖车费用">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+    <title>安省拖车费用查询系统</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.2.3/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.0/font/bootstrap-icons.css" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+SC:wght@400;500;700&display=swap" rel="stylesheet">
+    <link rel="manifest" href="manifest.json">
+    <link rel="apple-touch-icon" href="icons/icon-192x192.png">
+    <style>
+        :root {
+            --primary-color: #1a4789;
+            --secondary-color: #2c5aa0;
+            --accent-color: #0056b3;
+            --background-color: #f5f7fa;
+            --text-color: #2d3748;
+            --border-color: #e2e8f0;
+            --hover-color: #004494;
+            --canada-red: #FF0000;
+            --light-red: rgba(255, 0, 0, 0.05);
+            --card-bg-color: #ffffff;
+            --header-bg: linear-gradient(135deg, #f8f9fa, #e9ecef);
+            --footer-bg: linear-gradient(135deg, #e9ecef, #dee2e6);
+            --card-shadow: 0 4px 20px rgba(0, 0, 0, 0.05);
+            --hover-shadow: 0 8px 25px rgba(0, 0, 0, 0.1);
+        }
+        
+        body {
+            font-family: 'Noto Sans SC', -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+            background-color: var(--background-color);
+            color: var(--text-color);
+            line-height: 1.6;
+            background-image: linear-gradient(135deg, #f8f9fa 0%, #e9ecef 100%);
+        }
+    </style>
+    <link href="css/style.css" rel="stylesheet">
+    <link href="css/mobile.css" rel="stylesheet">
+</head>
+<body>
+    <div class="container mt-4">
+        <div class="header text-center mb-4">
+            <img src="panex-logo.png" alt="Panex Logo" class="mb-3">
+            <h1 class="mb-0">安省拖车费用查询系统</h1>
+        </div>
+        <div class="card main-card">
+            <div class="card-body">
+                <form id="queryForm" class="mb-4">
+                    <div class="mb-3">
+                        <label for="destinationCity" class="form-label">目的地城市</label>
+                        <div class="input-group">
+                            <input type="text" class="form-control" id="destinationCity" 
+                                   placeholder="请输入城市名称（如：KINGSTON）" autocomplete="off">
+                            <button type="button" class="btn btn-outline-secondary" id="clearInput">
+                                <i class="bi bi-x-lg"></i>
+                            </button>
+                        </div>
+                        <div id="searchStatus" class="form-text text-muted d-none">
+                            <span class="spinner-border spinner-border-sm" role="status"></span>
+                            正在搜索...
+                        </div>
+                        <ul id="citySuggestions" class="list-group mt-2"></ul>
+                    </div>
+                    
+                    <!-- 拖柜模式选择 -->
+                    <div class="mb-3">
+                        <label class="form-label">拖柜模式</label>
+                        <div class="d-flex gap-3">
+                            <div class="form-check">
+                                <input class="form-check-input" type="radio" name="moveType" id="liveUnload" value="live" checked>
+                                <label class="form-check-label" for="liveUnload">
+                                    Live Unload
+                                </label>
+                            </div>
+                            <div class="form-check">
+                                <input class="form-check-input" type="radio" name="moveType" id="dropMode" value="drop">
+                                <label class="form-check-label" for="dropMode">
+                                    Drop
+                                </label>
+                            </div>
+                        </div>
+                    </div>
+
+                    <button type="submit" class="btn btn-primary w-100">查询费用</button>
+                </form>
+
+                <!-- 搜索历史 -->
+                <div id="searchHistory" class="mb-4 d-none">
+                    <h5>最近搜索</h5>
+                    <div class="history-tags"></div>
+                </div>
+
+                <!-- 查询结果 -->
+                <div id="resultCard" class="card result-card d-none">
+                    <div class="card-header">
+                        <h5 class="card-title mb-0">查询结果</h5>
+                    </div>
+                    <div class="card-body">
+                        <div class="result-content">
+                            <div class="row">
+                                <div class="col">
+                                    <p class="mb-2">城市: <span id="resultCity" class="fw-bold"></span></p>
+                                    <p class="mb-2">基础费用: <span id="resultBaseRate" class="fw-bold text-primary"></span></p>
+                                    <p class="mb-2" id="fscRow">燃油附加费(FSC): <span id="resultFsc" class="fw-bold text-success"></span></p>
+                                    <p class="mb-2">总费用: <span id="resultTotalRate" class="fw-bold text-danger"></span></p>
+                                    <p class="mb-0">区域: <span id="resultZone" class="badge"></span></p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- 等时费用说明 -->
+                <div id="waitingTimeInfo" class="card mt-4 d-none">
+                    <div class="card-header">
+                        <h6 class="mb-0">等时费用说明</h6>
+                    </div>
+                    <div class="card-body">
+                        <div id="waitingTimeDetails" class="alert alert-info mb-0"></div>
+                    </div>
+                </div>
+
+                <!-- 额外操作加费说明 -->
+                <div class="card extra-fee-card">
+                    <div class="card-header d-flex justify-content-between align-items-center">
+                        <h5 class="mb-0">额外操作费用（如适用）</h5>
+                        <span class="badge bg-primary">点击查看详情</span>
+                    </div>
+                    <div class="card-body p-0">
+                        <div class="table-responsive">
+                            <table class="table extra-fee-table mb-0">
+                                <thead>
+                                    <tr>
+                                        <th>操作类型</th>
+                                        <th class="text-end" style="width: 120px;">费用</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    <!-- 运输相关费用 -->
+                                    <tr class="fee-group-header">
+                                        <td colspan="2" class="bg-light">
+                                            <i class="bi bi-truck"></i> 运输相关费用
+                                        </td>
+                                    </tr>
+                                    <tr>
+                                        <td class="fee-description">
+                                            <div class="d-flex align-items-center">
+                                                <div>
+                                                    DEAD RUNS INCLUDING TERMINALS
+                                                    <br>
+                                                    <small class="text-muted">空跑费用（含码头）</small>
+                                                </div>
+                                                <i class="bi bi-info-circle ms-2" data-bs-toggle="tooltip" title="空载往返码头的费用"></i>
+                                            </div>
+                                        </td>
+                                        <td class="fee-amount">$175.00</td>
+                                    </tr>
+                                    <tr>
+                                        <td class="fee-description">
+                                            <div class="d-flex align-items-center">
+                                                <div>
+                                                    EXTRA STOPS
+                                                    <br>
+                                                    <small class="text-muted">额外停靠点</small>
+                                                </div>
+                                                <i class="bi bi-info-circle ms-2" data-bs-toggle="tooltip" title="每增加一个停靠点的额外费用"></i>
+                                            </div>
+                                        </td>
+                                        <td class="fee-amount">$175.00</td>
+                                    </tr>
+                                    <tr>
+                                        <td class="fee-description">
+                                            <div class="d-flex align-items-center">
+                                                <div>
+                                                    PRE-PULL CHARGES
+                                                    <br>
+                                                    <small class="text-muted">预拖费用</small>
+                                                </div>
+                                                <i class="bi bi-info-circle ms-2" data-bs-toggle="tooltip" title="提前拖运产生的费用"></i>
+                                            </div>
+                                        </td>
+                                        <td class="fee-amount">$175.00</td>
+                                    </tr>
+
+                                    <!-- 特殊货物处理费用 -->
+                                    <tr class="fee-group-header">
+                                        <td colspan="2" class="bg-light">
+                                            <i class="bi bi-box-seam"></i> 特殊货物处理费用
+                                        </td>
+                                    </tr>
+                                    <tr>
+                                        <td class="fee-description">
+                                            <div class="d-flex align-items-center">
+                                                <div>
+                                                    HAZARDOUS LOAD CHARGE
+                                                    <br>
+                                                    <small class="text-muted">危险品装载费</small>
+                                                </div>
+                                                <i class="bi bi-info-circle ms-2" data-bs-toggle="tooltip" title="危险品特殊处理费用"></i>
+                                            </div>
+                                        </td>
+                                        <td class="fee-amount">$125.00</td>
+                                    </tr>
+                                    <tr>
+                                        <td class="fee-description">
+                                            <div class="d-flex align-items-center">
+                                                <div>
+                                                    PLACARD REMOVAL CHARGE
+                                                    <br>
+                                                    <small class="text-muted">标牌移除费</small>
+                                                </div>
+                                                <i class="bi bi-info-circle ms-2" data-bs-toggle="tooltip" title="危险品标识移除费用"></i>
+                                            </div>
+                                        </td>
+                                        <td class="fee-amount">$50.00</td>
+                                    </tr>
+                                    <tr>
+                                        <td class="fee-description">
+                                            <div class="d-flex align-items-center">
+                                                <div>
+                                                    TANKS
+                                                    <br>
+                                                    <small class="text-muted">罐式集装箱费用</small>
+                                                </div>
+                                                <i class="bi bi-info-circle ms-2" data-bs-toggle="tooltip" title="罐式集装箱特殊处理费用"></i>
+                                            </div>
+                                        </td>
+                                        <td class="fee-amount">$125.00</td>
+                                    </tr>
+
+                                    <!-- 特殊服务费用 -->
+                                    <tr class="fee-group-header">
+                                        <td colspan="2" class="bg-light">
+                                            <i class="bi bi-gear"></i> 特殊服务费用
+                                        </td>
+                                    </tr>
+                                    <tr>
+                                        <td class="fee-description">
+                                            <div class="d-flex align-items-center">
+                                                <div>
+                                                    RESIDENTIAL AREA
+                                                    <br>
+                                                    <small class="text-muted">住宅区服务费</small>
+                                                </div>
+                                                <i class="bi bi-info-circle ms-2" data-bs-toggle="tooltip" title="住宅区配送的额外服务费"></i>
+                                            </div>
+                                        </td>
+                                        <td class="fee-amount">$150.00</td>
+                                    </tr>
+                                    <tr>
+                                        <td class="fee-description">
+                                            <div class="d-flex align-items-center">
+                                                <div>
+                                                    TERMINAL TO TERMINAL (REPO)
+                                                    <br>
+                                                    <small class="text-muted">码头间转运</small>
+                                                </div>
+                                                <i class="bi bi-info-circle ms-2" data-bs-toggle="tooltip" title="在不同码头之间转运的费用"></i>
+                                            </div>
+                                        </td>
+                                        <td class="fee-amount">$250.00</td>
+                                    </tr>
+                                    <tr>
+                                        <td class="fee-description">
+                                            <div class="d-flex align-items-center">
+                                                <div>
+                                                    SCALING LOADS (NO CHARGE ON SITE)
+                                                    <br>
+                                                    <small class="text-muted">称重费用（现场不收费）</small>
+                                                </div>
+                                                <i class="bi bi-info-circle ms-2" data-bs-toggle="tooltip" title="货物称重服务费用，现场不收取"></i>
+                                            </div>
+                                        </td>
+                                        <td class="fee-amount">$156.00</td>
+                                    </tr>
+                                    <tr>
+                                        <td class="fee-description">
+                                            <div class="d-flex align-items-center">
+                                                <div>
+                                                    BOBTAIL CHARGES
+                                                    <br>
+                                                    <small class="text-muted">无挂车运行费用</small>
+                                                </div>
+                                                <i class="bi bi-info-circle ms-2" data-bs-toggle="tooltip" title="牵引车无挂车运行的费用"></i>
+                                            </div>
+                                        </td>
+                                        <td class="fee-amount">$65.00</td>
+                                    </tr>
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script src="js/data.js"></script>
+    <script src="js/main.js"></script>
+    <!-- Bootstrap Bundle JS (包含Popper) -->
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.2.3/dist/js/bootstrap.bundle.min.js"></script>
+    <!-- 初始化Tooltips -->
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            // 初始化所有的tooltips
+            var tooltipTriggerList = [].slice.call(document.querySelectorAll('[data-bs-toggle="tooltip"]'));
+            var tooltipList = tooltipTriggerList.map(function (tooltipTriggerEl) {
+                return new bootstrap.Tooltip(tooltipTriggerEl, {
+                    placement: 'right',
+                    trigger: 'hover'
+                });
+            });
+
+            // 点击卡片标题时展开/折叠内容
+            const extraFeeCard = document.querySelector('.extra-fee-card');
+            const cardBody = extraFeeCard.querySelector('.card-body');
+            const badge = extraFeeCard.querySelector('.badge');
+            
+            // 默认折叠
+            cardBody.style.display = 'none';
+            
+            extraFeeCard.querySelector('.card-header').addEventListener('click', function() {
+                const isHidden = cardBody.style.display === 'none';
+                cardBody.style.display = isHidden ? 'block' : 'none';
+                badge.textContent = isHidden ? '点击收起' : '点击查看详情';
+                badge.classList.toggle('bg-secondary', isHidden);
+                badge.classList.toggle('bg-primary', !isHidden);
+                
+                // 添加展开/折叠动画
+                if (isHidden) {
+                    cardBody.style.opacity = '0';
+                    cardBody.style.maxHeight = '0';
+                    setTimeout(() => {
+                        cardBody.style.transition = 'all 0.3s ease-in-out';
+                        cardBody.style.opacity = '1';
+                        cardBody.style.maxHeight = '2000px';
+                    }, 50);
+                }
+            });
+        });
+    </script>
+    <script>
+        // 注册Service Worker
+        if ('serviceWorker' in navigator) {
+            window.addEventListener('load', () => {
+                navigator.serviceWorker.register('/js/service-worker.js')
+                    .then(registration => {
+                        console.log('ServiceWorker registration successful');
+                    })
+                    .catch(err => {
+                        console.log('ServiceWorker registration failed: ', err);
+                    });
+            });
+        }
+
+        // 检测是否已安装PWA
+        window.addEventListener('beforeinstallprompt', (e) => {
+            e.preventDefault();
+            const installButton = document.createElement('button');
+            installButton.className = 'btn btn-primary mt-3';
+            installButton.textContent = '安装应用';
+            installButton.addEventListener('click', () => {
+                e.prompt();
+                installButton.style.display = 'none';
+            });
+            document.querySelector('.header').appendChild(installButton);
+        });
+    </script>
+</body>
+</html> 

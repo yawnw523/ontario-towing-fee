@@ -1,0 +1,94 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>生成应用图标</title>
+    <style>
+        canvas {
+            border: 1px solid #ccc;
+            margin: 10px;
+        }
+        .icon-container {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 20px;
+            padding: 20px;
+        }
+        .icon-item {
+            text-align: center;
+        }
+        button {
+            margin: 20px;
+            padding: 10px 20px;
+            font-size: 16px;
+        }
+    </style>
+</head>
+<body>
+    <div class="icon-container" id="iconContainer"></div>
+    <button onclick="generateIcons()">生成所有图标</button>
+    <script>
+        const sizes = [72, 96, 128, 144, 152, 192, 384, 512];
+        const iconContainer = document.getElementById('iconContainer');
+        
+        function createCanvas(size) {
+            const canvas = document.createElement('canvas');
+            canvas.width = size;
+            canvas.height = size;
+            return canvas;
+        }
+
+        function drawIcon(canvas) {
+            const ctx = canvas.getContext('2d');
+            const size = canvas.width;
+            
+            // 绘制背景
+            ctx.fillStyle = '#1a4789';
+            ctx.fillRect(0, 0, size, size);
+            
+            // 绘制文字
+            ctx.fillStyle = '#ffffff';
+            ctx.font = `bold ${size * 0.3}px Arial`;
+            ctx.textAlign = 'center';
+            ctx.textBaseline = 'middle';
+            ctx.fillText('拖车', size/2, size/2 - size * 0.1);
+            ctx.fillText('查询', size/2, size/2 + size * 0.1);
+        }
+
+        function generateIcons() {
+            sizes.forEach(size => {
+                const canvas = createCanvas(size);
+                drawIcon(canvas);
+                
+                // 创建下载链接
+                const link = document.createElement('a');
+                link.download = `icon-${size}x${size}.png`;
+                link.href = canvas.toDataURL('image/png');
+                link.textContent = `下载 ${size}x${size} 图标`;
+                
+                // 添加到页面
+                const div = document.createElement('div');
+                div.className = 'icon-item';
+                div.appendChild(canvas);
+                div.appendChild(document.createElement('br'));
+                div.appendChild(link);
+                iconContainer.appendChild(div);
+            });
+        }
+
+        // 页面加载时自动生成预览
+        window.onload = function() {
+            sizes.forEach(size => {
+                const canvas = createCanvas(size);
+                drawIcon(canvas);
+                
+                const div = document.createElement('div');
+                div.className = 'icon-item';
+                div.appendChild(canvas);
+                div.appendChild(document.createElement('br'));
+                div.appendChild(document.createTextNode(`${size}x${size}`));
+                iconContainer.appendChild(div);
+            });
+        };
+    </script>
+</body>
+</html> 
